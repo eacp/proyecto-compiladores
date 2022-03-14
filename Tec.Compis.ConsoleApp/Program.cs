@@ -88,9 +88,6 @@ void lexerApp(TextReader input, TextWriter output) {
 		
 	}
 
-	output.WriteLine(grammar);
-
-
 }
 
 void notFoundError(string path) 
