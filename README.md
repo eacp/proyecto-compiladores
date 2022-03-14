@@ -1,3 +1,10 @@
+# Proyecto de compiladores
+
+## Entrega 1
+Para la entrea 1 se construye un lexer que distinga entre los
+*terminals* y los *non terminals*.
+
+
 ## Instalar y ejecutar
 Este proyecto utiliza .net 6. Para compilar el código fuente y ejecutarlo
 es necesario instalar el SDK de .net para el sistema 
