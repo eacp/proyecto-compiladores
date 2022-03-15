@@ -12,11 +12,11 @@ dll=Tec.Compis.ConsoleApp/bin/Debug/net6.0/Tec.Compis.ConsoleApp.dll
 
 if [ ! -f "$dll" ]; then
     echo "Programa no compilado. Compilando y ejecutando"
+    echo "--------------------------------------------------------"
     $HOME/.dotnet/dotnet run --project Tec.Compis.ConsoleApp
-else 
+else
     echo "Programa compilado. Solamente ejecutar dotnet $dll."
+    echo "--------------------------------------------------------"
     $HOME/.dotnet/dotnet $dll
 fi
 
-
-# $HOME/.dotnet/dotnet run --project Tec.Compis.ConsoleApp
