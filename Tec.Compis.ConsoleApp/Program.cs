@@ -58,9 +58,14 @@ foreach (Definition def in g)
     }
 }
 
-Console.WriteLine(terminals);
-Console.WriteLine(nonTerminals);
+// Write them to a file
+using var outputFile = new StreamWriter(ask("Please write the path to the output file"));
 
+Console.WriteLine($"Terminal: {String.Join(',', terminals)}");
+Console.WriteLine($"Non terminal: {String.Join(',', nonTerminals)}");
+
+outputFile.WriteLine($"Terminal: {String.Join(',', terminals)}");
+outputFile.WriteLine($"Non terminal: {String.Join(',', nonTerminals)}");
 
 /// <summary>
 /// Prints a message to the console and reads a line
