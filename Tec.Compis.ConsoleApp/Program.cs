@@ -28,8 +28,39 @@ while(!grammarFile.EndOfStream)
     g.Add(line);
 }
 
-// The grammar has been loaded into memory
-// Now execute the algorithm
+// A symbol is terminal if and only if it appears on the right.
+// If it is at the right it is NT
+
+HashSet<string> terminals = new();
+HashSet<string> nonTerminals = new();
+
+foreach (Definition def in g)
+{
+    // Add the name to the set of NT
+    nonTerminals.Add(def.Name);
+
+    // Attempt to remove it from the terminals if it is
+    // somehow labeled as such
+    if( terminals.Contains(def.Name) )
+    {
+        terminals.Remove(def.Name);
+    }
+
+    // Iterate thru all the symbols in a definition
+    foreach (var token in def)
+    {
+        // Attempt to add it to the terminals if it is NOT
+        // in the NT already
+        if (!nonTerminals.Contains(token))
+        {
+            terminals.Add(token);
+        }
+    }
+}
+
+Console.WriteLine(terminals);
+Console.WriteLine(nonTerminals);
+
 
 /// <summary>
 /// Prints a message to the console and reads a line
