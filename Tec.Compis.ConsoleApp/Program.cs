@@ -73,6 +73,6 @@ outputFile.WriteLine($"Non terminal: {String.Join(',', nonTerminals)}");
 /// </summary>
 string ask(string message, string defaultAnswer="")
 {
-    Console.WriteLine("Please provide the path of the input file");
+    Console.WriteLine(message);
     return Console.ReadLine() ?? defaultAnswer;
 }
