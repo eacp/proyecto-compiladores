@@ -17,5 +17,8 @@ minutos ya que pueden ser varios MB. Se recomienda
 **no** desinstalar .net una vez descargado. 
 La descarga se guarda en `$HOME/.dotnet`.
 
+Es posible que primero deba proporcionar permisos de ejecución al lanzador
+y al script de ejecución. Esto se puede lograr con el comando `chmod +x *.sh`.
+
 La primera vez que se corre .net en una máquina, es posible que se muestre
 un mensaje de bienvenida. 
