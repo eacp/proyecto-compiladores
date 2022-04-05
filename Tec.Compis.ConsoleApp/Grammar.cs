@@ -28,55 +28,19 @@ class Grammar : IReadOnlyList<Definition>
     /// <inheritdoc/>
     IEnumerator IEnumerable.GetEnumerator() => definitions.GetEnumerator();
 
-    private HashSet<string> terminals = new(128);
-    private HashSet<string> nonTerminals = new(128);
+    // A lazily initialized lexer
+    private Lazy<Lexer> lexer;
 
-    internal HashSet<string> Terminals
+    internal Grammar()
     {
-        get
-        {
-            // Make them if not yet computed
-            if (terminals.Count == 0) makeTerminalsAndNonTerminals(); 
-
-            return terminals;
-        }
+        lexer = new(() => new Lexer(definitions));
     }
 
-    internal HashSet<string> NonTerminals
-    {
-        get {
-            if (nonTerminals.Count == 0) makeTerminalsAndNonTerminals();
-            return nonTerminals; 
-        }
-    }
+    // Access the terminals and non terminals lazily
+    internal HashSet<string> Terminals => lexer.Value.Terminals;
+    internal HashSet<string> NonTerminals => lexer.Value.NonTerminals;
 
-    private void makeTerminalsAndNonTerminals()
-    {
 
-        foreach (Definition def in definitions)
-        {
-            // Add the name to the set of NT
-            nonTerminals.Add(def.Name);
-
-            // Attempt to remove it from the terminals if it is
-            // somehow labeled as such
-            if (terminals.Contains(def.Name))
-            {
-                terminals.Remove(def.Name);
-            }
-
-            // Iterate thru all the symbols in a definition
-            foreach (var token in def)
-            {
-                // Attempt to add it to the terminals if it is NOT
-                // in the NT already
-                if (!nonTerminals.Contains(token))
-                {
-                    terminals.Add(token);
-                }
-            }
-        }
-    }
 }
 
 class Definition : IReadOnlyList<string>
