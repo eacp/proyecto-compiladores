@@ -28,16 +28,54 @@ class Grammar : IReadOnlyList<Definition>
     /// <inheritdoc/>
     IEnumerator IEnumerable.GetEnumerator() => definitions.GetEnumerator();
 
-    internal Dictionary<string, string[]> MakeFirsts()
-    {
-        var firsts = new Dictionary<string, string[]>(256);
-        // Construct the symbol table
-        foreach(var rule in definitions.GroupBy(d => d.Name))
-        {
-            firsts[rule.Key] = rule.Select(d => d.FirstOrDefault(epsilon)).ToArray();
-        }
+    private HashSet<string> terminals = new(128);
+    private HashSet<string> nonTerminals = new(128);
 
-        return firsts;
+    internal HashSet<string> Terminals
+    {
+        get
+        {
+            // Make them if not yet computed
+            if (terminals.Count == 0) makeTerminalsAndNonTerminals(); 
+
+            return terminals;
+        }
+    }
+
+    internal HashSet<string> NonTerminals
+    {
+        get {
+            if (nonTerminals.Count == 0) makeTerminalsAndNonTerminals();
+            return nonTerminals; 
+        }
+    }
+
+    private void makeTerminalsAndNonTerminals()
+    {
+
+        foreach (Definition def in definitions)
+        {
+            // Add the name to the set of NT
+            nonTerminals.Add(def.Name);
+
+            // Attempt to remove it from the terminals if it is
+            // somehow labeled as such
+            if (terminals.Contains(def.Name))
+            {
+                terminals.Remove(def.Name);
+            }
+
+            // Iterate thru all the symbols in a definition
+            foreach (var token in def)
+            {
+                // Attempt to add it to the terminals if it is NOT
+                // in the NT already
+                if (!nonTerminals.Contains(token))
+                {
+                    terminals.Add(token);
+                }
+            }
+        }
     }
 }
 
