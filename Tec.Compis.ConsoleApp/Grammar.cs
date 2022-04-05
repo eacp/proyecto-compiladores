@@ -4,6 +4,8 @@ namespace Tec.Compis.ConsoleApp;
 
 class Grammar : IReadOnlyList<Definition>
 {
+    private const string epsilon = "EPSILON";
+
     // A grammar has one or more definitions
     private List<Definition> definitions = new(64);
 
@@ -25,6 +27,18 @@ class Grammar : IReadOnlyList<Definition>
 
     /// <inheritdoc/>
     IEnumerator IEnumerable.GetEnumerator() => definitions.GetEnumerator();
+
+    internal Dictionary<string, string[]> MakeFirsts()
+    {
+        var firsts = new Dictionary<string, string[]>(256);
+        // Construct the symbol table
+        foreach(var rule in definitions.GroupBy(d => d.Name))
+        {
+            firsts[rule.Key] = rule.Select(d => d.FirstOrDefault(epsilon)).ToArray();
+        }
+
+        return firsts;
+    }
 }
 
 class Definition : IReadOnlyList<string>

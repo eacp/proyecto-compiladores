@@ -67,6 +67,16 @@ Console.WriteLine($"Non terminal: {String.Join(',', nonTerminals)}");
 outputFile.WriteLine($"Terminal: {String.Join(',', terminals)}");
 outputFile.WriteLine($"Non terminal: {String.Join(',', nonTerminals)}");
 
+// Get the firsts of the grammar
+Dictionary<string, string[]> first = g.MakeFirsts();
+
+Console.WriteLine("First table:");
+// Print all with a nice-ish format
+foreach(var s in first)
+{
+    Console.WriteLine($"{s.Key}: {Util.Contents(s.Value)}");
+}
+
 /// <summary>
 /// Prints a message to the console and reads a line
 /// from the console.
