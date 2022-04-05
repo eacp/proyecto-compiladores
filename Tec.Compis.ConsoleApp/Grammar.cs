@@ -27,20 +27,6 @@ class Grammar : IReadOnlyList<Definition>
 
     /// <inheritdoc/>
     IEnumerator IEnumerable.GetEnumerator() => definitions.GetEnumerator();
-
-    // A lazily initialized lexer
-    private Lazy<Lexer> lexer;
-
-    internal Grammar()
-    {
-        lexer = new(() => new Lexer(definitions));
-    }
-
-    // Access the terminals and non terminals lazily
-    internal HashSet<string> Terminals => lexer.Value.Terminals;
-    internal HashSet<string> NonTerminals => lexer.Value.NonTerminals;
-
-
 }
 
 class Definition : IReadOnlyList<string>

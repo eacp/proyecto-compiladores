@@ -31,14 +31,31 @@ while(!grammarFile.EndOfStream)
 // A symbol is terminal if and only if it appears on the right.
 // If it is at the right it is NT
 
+// Create a lexer from the grammar
+Lexer lexer = new(g);
+
 // Write them to a file
 using var outputFile = new StreamWriter(ask("Please write the path to the output file"));
 
-Console.WriteLine($"Terminal: {String.Join(',', g.Terminals)}");
-Console.WriteLine($"Non terminal: {String.Join(',', g.NonTerminals)}");
+Console.WriteLine($"Terminal: {String.Join(',', lexer.Terminals)}");
+Console.WriteLine($"Non terminal: {String.Join(',', lexer.NonTerminals)}");
 
-outputFile.WriteLine($"Terminal: {String.Join(',', g.Terminals)}");
-outputFile.WriteLine($"Non terminal: {String.Join(',', g.NonTerminals)}");
+outputFile.WriteLine($"Terminal: {String.Join(',', lexer.Terminals)}");
+outputFile.WriteLine($"Non terminal: {String.Join(',', lexer.NonTerminals)}");
+
+// Now print the first table
+foreach (string nt in lexer.NonTerminals)
+{
+    List<string> first = lexer.FirstOf(nt);
+
+    if (first.Count() >= 1000000)
+    {
+        Console.WriteLine("RECURSIVE!!!");
+        break;
+    }
+
+    Console.WriteLine($"First({nt}) = {Util.Contents(first.Distinct())}");
+}
 
 /// <summary>
 /// Prints a message to the console and reads a line

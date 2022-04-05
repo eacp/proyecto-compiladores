@@ -6,8 +6,11 @@ internal class Lexer
     internal HashSet<string> Terminals = new(128);
     internal HashSet<string> NonTerminals = new(128);
 
+    private Dictionary<string, Definition[]> ruleTable;
+
     internal Lexer(IEnumerable<Definition> defs)
     {
+        // Add terminals and non terminals
         foreach (Definition def in defs)
         {
             // Add the name to the set of NT
@@ -31,5 +34,48 @@ internal class Lexer
                 }
             }
         }
+
+        ruleTable = defs
+            .GroupBy(def => def.Name)
+            .ToDictionary(x => x.Key, x => x.ToArray());
+    }
+
+    bool isTerminal(string token) => token == "epsilon" || Terminals.Contains(token);
+
+    internal List<string> FirstOf(string nt)
+    {
+        var list = new List<string>(128);
+
+        Stack<string> stack = new Stack<string>(128);
+
+        // Push the first one
+        stack.Push(nt);
+
+        int iterations = 0;
+
+        // Use stack-based recursion
+        while(stack.Count > 0)
+        {
+            string symbol = stack.Pop();
+            if (isTerminal(symbol))
+            {
+                list.Add(symbol);
+                continue;
+            }
+
+            // Otherwise append all the tokens to the stack
+            Definition[] defs = ruleTable[symbol];
+            foreach (Definition def in defs) 
+                stack.Push(def.FirstOrDefault("epsilon"));
+
+            iterations++;
+            if (iterations >= 1000000)
+            {
+                return list;
+            }
+
+        }
+
+        return list;
     }
 }
