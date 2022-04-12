@@ -40,6 +40,15 @@ internal class Lexer
             .ToDictionary(x => x.Key, x => x.ToArray());
     }
 
+    /// <summary>
+    /// Creates a lexer that is defined by a file or a text.
+    /// </summary>
+    /// <param name="input">An input that can be a file or the console.</param>
+    internal Lexer(TextReader input)
+    {
+        List<Definition> defs = new(128);
+    }
+
     bool isTerminal(string token) => token == "epsilon" || Terminals.Contains(token);
 
     internal List<string> FirstOf(string nt)
