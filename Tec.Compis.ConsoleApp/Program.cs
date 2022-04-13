@@ -11,28 +11,12 @@ string filepath = args.Length > 0 ?
     args[0] : 
     ask("Please provid the filepath for the grammar");
 
-// Open the file
-using var grammarFile = File.OpenText(filepath);
-
-
-// The grammar
-Grammar g = new();
-
-// Append all the lines
-// Read the first one
-grammarFile.ReadLine();
-
-while(!grammarFile.EndOfStream)
-{
-    var line = grammarFile.ReadLine();
-    g.Add(line);
-}
 
 // A symbol is terminal if and only if it appears on the right.
 // If it is at the right it is NT
 
 // Create a lexer from the grammar
-Lexer lexer = new(g);
+Lexer lexer = new(File.OpenText(filepath));
 
 // Write them to a file
 using var outputFile = new StreamWriter(ask("Please write the path to the output file"));
@@ -48,10 +32,10 @@ foreach (string nt in lexer.NonTerminals)
 {
     List<string> first = lexer.FirstOf(nt);
 
-    if (first.Count() >= 1000000)
+    if (lexer.ReachedRecursive)
     {
-        Console.WriteLine("RECURSIVE!!!");
-        break;
+        Console.WriteLine("la gramática es RECURSIVA, por lo tanto NO es LL(1)");
+        return;
     }
 
     Console.WriteLine($"First({nt}) = {Util.Contents(first.Distinct())}");

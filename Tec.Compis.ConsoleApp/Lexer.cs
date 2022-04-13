@@ -8,7 +8,41 @@ internal class Lexer
 
     private Dictionary<string, Definition[]> ruleTable;
 
+    /// <summary>
+    /// Gets if we reached a recursive state.
+    /// </summary>
+    internal bool ReachedRecursive { get; private set; }
+
     internal Lexer(IEnumerable<Definition> defs)
+    {
+
+        ruleTable = makeRuleTable(defs);
+    }
+
+    /// <summary>
+    /// Creates a lexer that is defined by a file or a text.
+    /// </summary>
+    /// <param name="input">An input that can be a file or the console.</param>
+    internal Lexer(TextReader input)
+    {
+        // The grammar
+        Grammar g = new();
+
+        // Append all the lines
+        // Read the first one
+        int lines = int.Parse(input.ReadLine() ?? "");
+
+        for(int i = 0; i  < lines; i++)
+        {
+            string line = input.ReadLine() ?? "";
+            g.Add(line);
+        }
+
+        // Save the rule table made from a list of definitions
+        ruleTable =  makeRuleTable(g);
+    }
+
+    private Dictionary<string, Definition[]> makeRuleTable(IEnumerable<Definition> defs)
     {
         // Add terminals and non terminals
         foreach (Definition def in defs)
@@ -35,18 +69,9 @@ internal class Lexer
             }
         }
 
-        ruleTable = defs
+        return defs
             .GroupBy(def => def.Name)
             .ToDictionary(x => x.Key, x => x.ToArray());
-    }
-
-    /// <summary>
-    /// Creates a lexer that is defined by a file or a text.
-    /// </summary>
-    /// <param name="input">An input that can be a file or the console.</param>
-    internal Lexer(TextReader input)
-    {
-        List<Definition> defs = new(128);
     }
 
     bool isTerminal(string token) => token == "epsilon" || Terminals.Contains(token);
@@ -80,6 +105,8 @@ internal class Lexer
             iterations++;
             if (iterations >= 1000000)
             {
+                // Register we detected recursion.
+                ReachedRecursive = true;
                 return list;
             }
 
