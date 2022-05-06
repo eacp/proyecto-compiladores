@@ -73,4 +73,14 @@ class Definition : IReadOnlyList<string>
 
     /// <inheritdoc/>
     IEnumerator IEnumerable.GetEnumerator() => tokens.GetEnumerator();
+
+    /// <summary>
+    /// Determines if this definition is recursive.
+    /// </summary>
+    /// <remarks>
+    /// A recursive definition is one like
+    /// 
+    /// E -> E X Y Z
+    /// </remarks>
+    internal bool IsRecursive => Name == tokens[0];
 }
